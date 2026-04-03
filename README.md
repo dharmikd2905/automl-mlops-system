@@ -1,116 +1,63 @@
-# 🚀 Automated End-to-End MLOps System
+# End-to-End MLOps System
 
-A **production-ready AutoML + MLOps platform** that enables users to upload structured datasets, automatically train and select the best machine learning model, track experiments, and deploy predictions via API.
+This project is a simple but practical implementation of an end-to-end machine learning system. It allows a user to upload a dataset, automatically train multiple models, select the best one, and use it for predictions through an API.
 
----
-
-## 📌 Overview
-
-This system eliminates manual ML workflows by providing a **fully automated pipeline**:
-
-**Data → Preprocessing → Model Training → Model Selection → Tracking → Deployment → Prediction**
-
-It is designed to simulate **real-world ML systems used in industry**.
+The goal of this project was to understand how ML systems work beyond notebooks and build something closer to a real-world workflow.
 
 ---
 
-## ✨ Key Features
+## What it does
 
-* 🔄 **Automated Preprocessing**
-
-  * Missing value handling
-  * Categorical encoding (One-Hot / Label Encoding)
-  * Feature scaling
-
-* 🧠 **Automatic Problem Detection**
-
-  * Classification vs Regression based on target column
-
-* 🤖 **Model Training & Selection**
-
-  * Trains multiple models:
-
-    * Random Forest
-    * Gradient Boosting
-    * Logistic / Linear Regression
-  * Selects best model using performance metrics
-
-* 📊 **Experiment Tracking**
-
-  * Integrated with **MLflow**
-  * Logs parameters, metrics, and model versions
-
-* 🌐 **API Deployment**
-
-  * Built with **FastAPI**
-  * Endpoints:
-
-    * `/train` → Train model
-    * `/predict` → Generate predictions
-
-* 🐳 **Dockerized System**
-
-  * Fully containerized using Docker & Docker Compose
-
-* ⚙️ **CI/CD Ready**
-
-  * GitHub Actions for testing and build validation
+* Takes a CSV dataset as input
+* Detects whether the problem is classification or regression
+* Cleans and preprocesses the data
+* Trains multiple models and selects the best one
+* Logs experiments using MLflow
+* Exposes APIs for training and prediction using FastAPI
+* Runs using Docker for easy setup
 
 ---
 
-## 🏗️ Project Structure
+## Tech Stack
 
-```bash
-├── api/               # FastAPI endpoints
-├── pipelines/        # Training pipeline
-├── models/           # Model logic
-├── utils/            # Preprocessing & helpers
-├── tests/            # Unit tests
-├── data/             # Sample datasets
-├── uploads/          # Uploaded datasets (ignored in git)
-├── models_store/     # Saved models (ignored in git)
-├── docker-compose.yml
-├── Dockerfile
-├── requirements.txt
-└── README.md
-```
+* Python
+* scikit-learn
+* FastAPI
+* MLflow
+* Docker
 
 ---
 
-## ⚙️ Setup & Installation
+## How to run
 
-### 🔹 Option 1: Run with Docker (Recommended)
+### Using Docker (recommended)
 
 ```bash
 docker-compose up --build
 ```
 
-Access:
+Then open:
 
 * API → http://localhost:8000
 * MLflow → http://localhost:5000
 
 ---
 
-### 🔹 Option 2: Run Locally
+### Run locally
 
-#### 1. Install dependencies
+Install dependencies:
 
 ```bash
 pip install -r requirements.txt
 ```
 
-#### 2. Start MLflow server
+Start MLflow:
 
 ```bash
-mlflow server \
-  --backend-store-uri sqlite:///mlflow.db \
-  --default-artifact-root ./mlflow-artifacts \
-  --host 0.0.0.0 \
-  --port 5000
+mlflow server --backend-store-uri sqlite:///mlflow.db --default-artifact-root ./mlflow-artifacts --host 0.0.0.0 --port 5000
 ```
 
-#### 3. Start FastAPI
+Start API:
 
 ```bash
 uvicorn api.main:app --reload --host 0.0.0.0 --port 8000
@@ -118,20 +65,19 @@ uvicorn api.main:app --reload --host 0.0.0.0 --port 8000
 
 ---
 
-## 🚀 Usage Guide
+## How to use
 
-### 🔹 Step 1: Train Model
+1. Open http://localhost:8000
+2. Upload a CSV file
+3. Enter the target column (for example: `price`)
+4. Click "Train Model"
 
-* Open → http://localhost:8000
-* Upload CSV dataset
-* Enter target column (e.g., `price`)
-* Click **Train Model**
+After training:
 
----
+* Go to the predict section
+* Enter input features as JSON
 
-### 🔹 Step 2: Predict
-
-Example input:
+Example:
 
 ```json
 {
@@ -140,72 +86,39 @@ Example input:
 }
 ```
 
-👉 Output:
+---
 
-```json
-{
-  "prediction": 5000000
-}
+## Example use case
+
+You can try a simple dataset like house prices:
+
+| area | bedrooms | price   |
+| ---- | -------- | ------- |
+| 1000 | 2        | 3000000 |
+| 1500 | 3        | 4500000 |
+
+---
+
+## Project structure
+
+```
+api/            # FastAPI routes
+pipelines/      # training logic
+models/         # model code
+utils/          # preprocessing
+tests/          # test cases
 ```
 
 ---
 
-## 📊 MLflow Tracking
+## Notes
 
-* View experiments at → http://localhost:5000
-* Track:
-
-  * model performance
-  * parameters
-  * best model
+* Works best with structured tabular data
+* Models are saved locally
+* This is a learning + practical project, not a full production system
 
 ---
 
-## 🧪 Testing
+## Author
 
-Run tests using:
-
-```bash
-pytest tests/
-```
-
----
-
-## 🧠 Tech Stack
-
-* Python
-* Scikit-learn
-* FastAPI
-* MLflow
-* Docker
-* GitHub Actions
-
----
-
-## 🎯 Key Highlights
-
-* End-to-End ML pipeline
-* AutoML-like functionality
-* Production-ready architecture
-* API + Deployment ready
-* Scalable & modular design
-
----
-
-## 📌 Future Improvements
-
-* Model registry (production/staging)
-* UI enhancements
-* Cloud deployment (AWS/GCP)
-* Advanced feature engineering
-* Monitoring & drift detection
-
----
-
-## 👨‍💻 Author
-
-**Dharmik Dudhat**
-
----
-
-⭐ If you found this project useful, consider giving it a star!
+Dharmik Dudhat
