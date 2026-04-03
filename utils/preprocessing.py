@@ -21,17 +21,16 @@ class DataPreprocessor:
         self.task_type = None
         
     def detect_task_type(self, y: pd.Series) -> str:
+    """Detect if the problem is classification or regression."""
+    
     if pd.api.types.is_numeric_dtype(y):
-        # If very few unique values → classification
-        if y.nunique() <= 10:
-            self.task_type = 'classification'
-        else:
-            self.task_type = 'regression'
+        self.task_type = 'regression'
     else:
         self.task_type = 'classification'
         
+    logger.info(f"Detected task type: {self.task_type}")
     return self.task_type
-
+        
     def fit_transform(self, df: pd.DataFrame, target_col: str) -> Tuple[np.ndarray, np.ndarray, pd.Series, pd.Series]:
         logger.info(f"Starting data preprocessing. Target: {target_col}")
         
