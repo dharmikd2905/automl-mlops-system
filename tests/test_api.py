@@ -1,8 +1,4 @@
-import pytest
 from fastapi.testclient import TestClient
-import os
-import tempfile
-import pandas as pd
 
 from api.main import app
 
