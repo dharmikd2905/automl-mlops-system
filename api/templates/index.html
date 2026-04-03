@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MLOps Platform</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; background-color: #f5f7fa; color: #333; }
+        .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        h1, h2 { color: #2c3e50; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        input[type="text"], input[type="file"] { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        button { background-color: #3498db; color: white; border: none; padding: 10px 15px; border-radius: 4px; cursor: pointer; font-size: 16px; }
+        button:hover { background-color: #2980b9; }
+        pre { background: #eee; padding: 10px; border-radius: 4px; overflow-x: auto; }
+        .result { display: none; }
+    </style>
+</head>
+<body>
+    <h1>End-to-End MLOps Platform</h1>
+    
+    <div class="card">
+        <h2>1. Train Model</h2>
+        <form id="trainForm">
+            <div class="form-group">
+                <label for="dataset">Upload Dataset (CSV)</label>
+                <input type="file" id="dataset" accept=".csv" required>
+            </div>
+            <div class="form-group">
+                <label for="target_column">Target Column Name</label>
+                <input type="text" id="target_column" required placeholder="e.g., target, price">
+            </div>
+            <button type="submit">Train Model</button>
+        </form>
+        <div id="trainResult" class="result">
+            <h3>Training Results</h3>
+            <pre id="trainOutput"></pre>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>2. Predict</h2>
+        <p>Make a prediction using the trained model. Input JSON features matching dataset columns.</p>
+        <form id="predictForm">
+            <div class="form-group">
+                <label for="features">Features (JSON)</label>
+                <input type="text" id="features" required placeholder='{"feature1": 10, "feature2": "A"}'>
+            </div>
+            <button type="submit">Predict</button>
+        </form>
+        <div id="predictResult" class="result">
+            <h3>Prediction</h3>
+            <pre id="predictOutput"></pre>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('trainForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = e.target.querySelector('button');
+            btn.innerText = 'Training...';
+            btn.disabled = true;
+            
+            const formData = new FormData();
+            formData.append('file', document.getElementById('dataset').files[0]);
+            formData.append('target_column', document.getElementById('target_column').value);
+
+            try {
+                const response = await fetch('/train', {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await response.json();
+                document.getElementById('trainOutput').innerText = JSON.stringify(data, null, 2);
+                document.getElementById('trainResult').style.display = 'block';
+            } catch (error) {
+                alert('Error training model');
+            } finally {
+                btn.innerText = 'Train Model';
+                btn.disabled = false;
+            }
+        });
+
+        document.getElementById('predictForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            try {
+                const featuresStr = document.getElementById('features').value;
+                const features = JSON.parse(featuresStr);
+                
+                const response = await fetch('/predict', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ features })
+                });
+                const data = await response.json();
+                document.getElementById('predictOutput').innerText = JSON.stringify(data, null, 2);
+                document.getElementById('predictResult').style.display = 'block';
+            } catch (error) {
+                alert('Error parsing JSON or making prediction');
+            }
+        });
+    </script>
+</body>
+</html>
