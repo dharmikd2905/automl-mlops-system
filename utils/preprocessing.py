@@ -21,7 +21,7 @@ class DataPreprocessor:
         self.task_type = None
         
     def detect_task_type(self, y: pd.Series) -> str:
-    """Detect if the problem is classification or regression."""
+        """Detect if the problem is classification or regression."""
     
         if pd.api.types.is_numeric_dtype(y):
             self.task_type = 'regression'
