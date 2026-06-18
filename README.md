@@ -1,28 +1,27 @@
 # ⚡ AutoML MLOps Platform
 
-[![CI/CD Pipeline](https://github.com/Prasham1706/automl-mlops-system/actions/workflows/ci.yml/badge.svg)](https://github.com/Prasham1706/automl-mlops-system/actions/workflows/ci.yml)
-![Python](https://img.shields.io/badge/Python-3.10-3776AB?logo=python&logoColor=white)
-![FastAPI](https://img.shields.io/badge/FastAPI-0.104-009688?logo=fastapi)
-![scikit-learn](https://img.shields.io/badge/scikit--learn-1.3-F7931E?logo=scikit-learn)
-![MLflow](https://img.shields.io/badge/MLflow-2.8-0194E2?logo=mlflow)
-![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?logo=docker)
+[![GitHub Repo](https://img.shields.io/badge/GitHub-Repo-181717?logo=github&logoColor=white)](https://github.com/dharmikdudhat/automl-mlops-system)
+[![CI/CD Pipeline](https://github.com/dharmikdudhat/automl-mlops-system/actions/workflows/ci.yml/badge.svg)](https://github.com/dharmikdudhat/automl-mlops-system/actions/workflows/ci.yml)
+[![Python](https://img.shields.io/badge/Python-3.10-3776AB?logo=python&logoColor=white)](https://www.python.org/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.104-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
+[![scikit--learn](https://img.shields.io/badge/scikit--learn-1.3-F7931E?logo=scikit-learn&logoColor=white)](https://scikit-learn.org/)
+[![MLflow](https://img.shields.io/badge/MLflow-2.8-0194E2?logo=mlflow&logoColor=white)](https://mlflow.org/)
+[![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?logo=docker&logoColor=white)](https://www.docker.com/)
 
-An end-to-end AutoML system that accepts raw tabular data, auto-detects the task type, trains and compares multiple models, selects the best via automated evaluation, and exposes a production-ready prediction API — all containerized with full CI/CD.
-
----
-
-## What this does
-
-Upload a CSV → system auto-detects classification vs regression → trains 3 models in parallel → compares all metrics side-by-side → deploys the best model to a REST API. Experiments are tracked in MLflow.
-
-**Benchmarks on sample dataset:**
-- Classification accuracy: 94.7% (GradientBoostingClassifier)
-- Training time: <10s on 1000-row dataset
-- API prediction latency: <50ms
+An end-to-end, production-ready AutoML system that accepts raw CSV datasets, auto-detects task types (Classification/Regression), performs robust feature engineering, trains multiple architectures in parallel, and deploys the best-performing model to a high-concurrency REST API.
 
 ---
 
-## Architecture
+## 🚀 What this does
+
+1.  **Smart Preprocessing**: Automatically handles missing values (median/mode), one-hot encoding for categorical data, and feature engineering (e.g., Age from YearBuilt).
+2.  **Parallel Benchmarking**: Trains multiple models (Random Forest, Gradient Boosting, Ridge, Lasso, etc.) and compares them using RMSE, R2, Accuracy, and F1.
+3.  **Inference Resilience**: Prediction API auto-fills missing features with training-time defaults (median) and provides detailed metadata on how data was handled.
+4.  **Full MLOps Lifecycle**: Containerized with Docker, tracked with MLflow, and hardened with a 3-stage GitHub Actions CI/CD.
+
+---
+
+## 🏗️ Architecture
 
 ```
 ┌──────────────┐     CSV      ┌─────────────────┐     Artifacts    ┌──────────────┐
@@ -38,100 +37,58 @@ Upload a CSV → system auto-detects classification vs regression → trains 3 m
                               │         ▼         │
                               │  ┌─────────────┐ │
                               │  │ ModelTrainer│ │
-                              │  │ LR | RF | GB│ │
+                              │  │ RF | GB | RI│ │
                               │  └──────┬──────┘ │
                               │         ▼         │
                               │  MLflow Tracking  │
                               └──────────────────┘
 ```
 
-## Tech Stack
+---
 
-| Layer | Technology |
-|---|---|
-| API | FastAPI + Uvicorn |
-| ML | scikit-learn (LR, RF, GradientBoosting) |
-| Tracking | MLflow |
-| Containerization | Docker + Docker Compose |
-| CI/CD | GitHub Actions (Lint → Test → Docker Build) |
-| Code Quality | Ruff |
+## 🧰 Tech Stack
+
+| Layer | Technology | Purpose |
+|---|---|---|
+| **API** | ![FastAPI](https://img.shields.io/badge/FastAPI-009688?logo=fastapi&logoColor=white) | REST endpoints + Modern UI serving |
+| **ML** | ![scikit-learn](https://img.shields.io/badge/scikit--learn-F7931E?logo=scikit-learn&logoColor=white) | Automated training + resilient inference |
+| **Tracking** | ![MLflow](https://img.shields.io/badge/MLflow-0194E2?logo=mlflow&logoColor=white) | Experiment logging & artifact versioning |
+| **Containers** | ![Docker](https://img.shields.io/badge/Docker-2496ED?logo=docker&logoColor=white) | Reproducible production deployment |
+| **CI/CD** | ![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-2088FF?logo=github-actions&logoColor=white) | Automated Lint → Test → Build pipeline |
+| **Linting** | ![Ruff](https://img.shields.io/badge/Ruff-D7FF64?logo=python&logoColor=black) | High-performance code quality |
+| **Testing** | ![pytest](https://img.shields.io/badge/pytest-0A9EDC?logo=pytest&logoColor=white) | Unit and integration test suite |
+| **Validation** | ![Pydantic](https://img.shields.io/badge/Pydantic-E92067?logo=pydantic&logoColor=white) | Strict request/response data validation |
 
 ---
 
-## Quickstart
+## 🛠️ Quickstart
 
 ```bash
-git clone https://github.com/Prasham1706/automl-mlops-system.git
+# Clone the repository
+git clone https://github.com/dharmikdudhat/automl-mlops-system.git
 cd automl-mlops-system
+
+# Launch services (API + MLflow)
 docker-compose up --build
 ```
 
-Open:
-- **Platform UI** → http://localhost:8000
-- **MLflow** → http://localhost:5000
+- **Dashboard**: [http://localhost:8000](http://localhost:8000)
+- **MLflow UI**: [http://localhost:5000](http://localhost:5000)
 
 ---
 
-## API Reference
+## 👤 Author
 
-### `POST /train`
-Upload a CSV and train models.
+**Dharmik Dudhat**
+*B.Tech Information & Communication Technology*
+**Pandit Deendayal Energy University (PDEU), 2026**
+**CGPA: 8.8**
 
-```bash
-curl -X POST http://localhost:8000/train \
-  -F "file=@data/sample_classification.csv" \
-  -F "target_column=target"
-```
-
-Response:
-```json
-{
-  "task_type": "classification",
-  "model_name": "GradientBoostingClassifier",
-  "metrics": { "accuracy": 0.947, "f1_score": 0.945 },
-  "all_results": {
-    "LogisticRegression": { "accuracy": 0.882, "f1_score": 0.880 },
-    "RandomForestClassifier": { "accuracy": 0.931, "f1_score": 0.929 },
-    "GradientBoostingClassifier": { "accuracy": 0.947, "f1_score": 0.945 }
-  }
-}
-```
-
-### `POST /predict`
-```bash
-curl -X POST http://localhost:8000/predict \
-  -H "Content-Type: application/json" \
-  -d '{"features": {"feature1": 10, "feature2": "A"}}'
-```
+- [GitHub](https://github.com/dharmikdudhat)
+- [LinkedIn](https://linkedin.com/in/dharmikdudhat)
 
 ---
 
-## Project Structure
+## 📄 License
 
-```
-automl-mlops-system/
-├── api/
-│   ├── main.py          # FastAPI routes
-│   ├── schemas.py       # Pydantic models
-│   └── templates/
-│       └── index.html   # Dashboard UI
-├── models/
-│   └── trainer.py       # Multi-model training & evaluation
-├── pipelines/
-│   └── train_pipeline.py # Orchestration + MLflow logging
-├── utils/
-│   ├── preprocessing.py # Feature engineering
-│   └── logger.py
-├── tests/               # pytest suite
-├── .github/workflows/
-│   └── ci.yml          # Lint → Test → Docker Build
-├── Dockerfile
-├── docker-compose.yml
-└── requirements.txt
-```
-
----
-
-## Author
-
-**Dharmik Dudhat** — B.Tech ICT, PDEU '26
+MIT License — feel free to use for your own portfolio.
