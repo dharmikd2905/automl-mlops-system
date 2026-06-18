@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AutoML Platform | v1.2.1</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #fafafa;
+            --surface: #ffffff;
+            --border: #e5e7eb;
+            --primary: #0f0f0f;
+            --accent: #6366f1;
+            --success: #16a34a;
+            --error: #dc2626;
+            --warning: #d97706;
+            --text-main: #0f0f0f;
+            --text-sec: #6b7280;
+            --radius: 8px;
+            --shadow: 0 1px 3px rgba(0,0,0,0.08);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: var(--bg); 
+            color: var(--text-main);
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        header { background: var(--primary); color: white; height: 64px; display: flex; align-items: center; padding: 0 24px; margin-bottom: 48px; }
+        .header-inner { width: 100%; max-width: 1100px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 18px; font-weight: 700; letter-spacing: -0.02em; }
+        .header-meta { display: flex; align-items: center; gap: 16px; }
+        .badge-pill { padding: 4px 10px; border-radius: 99px; font-size: 11px; font-weight: 600; text-transform: uppercase; }
+        .badge-ver { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.8); }
+        .badge-ci { background: rgba(22,163,74,0.1); color: #16a34a; border: 1px solid rgba(22,163,74,0.2); }
+
+        .container { max-width: 1100px; margin: 0 auto; padding: 0 24px 64px; }
+        .eyebrow { color: var(--accent); font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; display: block; }
+        .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); padding: 32px; margin-bottom: 32px; }
+        .card-title { font-size: 20px; font-weight: 700; margin-bottom: 4px; }
+        .card-subtitle { color: var(--text-sec); font-size: 14px; margin-bottom: 24px; }
+
+        label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 8px; color: var(--text-sec); }
+        input[type="text"], textarea { width: 100%; border: 1px solid var(--border); padding: 12px; border-radius: 6px; font-size: 14px; transition: all 0.2s; }
+        input[type="text"]:focus, textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(99,102,241,0.1); }
+
+        .upload-zone { border: 2px dashed #d1d5db; padding: 48px 24px; text-align: center; border-radius: var(--radius); cursor: pointer; transition: all 0.2s; margin-bottom: 24px; }
+        .upload-zone:hover { border-color: var(--accent); background: rgba(99,102,241,0.02); }
+        .btn { background: var(--primary); color: white; border: none; padding: 12px 24px; border-radius: 6px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.2s; }
+        .btn:disabled { background: #e5e7eb; color: #9ca3af; cursor: not-allowed; }
+
+        .progress-wrap { margin-top: 32px; display: none; }
+        .progress-info { display: flex; justify-content: space-between; font-size: 13px; font-weight: 600; margin-bottom: 12px; }
+        .progress-track { height: 6px; background: #f3f4f6; border-radius: 3px; overflow: hidden; }
+        .progress-bar { height: 100%; background: var(--primary); width: 0%; transition: width 0.3s ease; }
+        .steps { display: flex; justify-content: space-between; margin-top: 16px; }
+        .step { font-size: 11px; color: var(--text-sec); text-transform: uppercase; font-weight: 500; }
+        .step.active { color: var(--primary); font-weight: 700; }
+
+        .table-wrap { border: 1px solid var(--border); border-radius: 6px; overflow: hidden; margin-top: 24px; }
+        table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        th { background: #f9fafb; text-align: left; padding: 12px 16px; font-weight: 600; color: var(--text-sec); border-bottom: 1px solid var(--border); }
+        td { padding: 14px 16px; border-bottom: 1px solid var(--border); background: white; }
+        .best-row { background: #fafaff !important; border-left: 3px solid var(--accent); }
+
+        #feature-hint { display: none; font-size: 12px; color: var(--accent); background: rgba(99,102,241,0.05); border: 1px solid rgba(99,102,241,0.2); border-radius: 6px; padding: 16px; margin-bottom: 20px; font-family: 'JetBrains Mono', monospace; line-height: 1.6; }
+        .result-box { margin-top: 24px; padding: 32px; border: 1px solid var(--border); border-radius: var(--radius); display: none; }
+        .res-val { font-size: 56px; font-weight: 800; text-align: center; font-family: 'JetBrains Mono', monospace; line-height: 1; margin: 12px 0; }
+        
+        #errorBanner { background: #fef2f2; border: 1px solid rgba(220,38,38,0.2); color: var(--error); padding: 12px 16px; border-radius: 6px; font-size: 13px; margin-bottom: 24px; display: none; }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-inner">
+            <div class="logo">AutoML Platform</div>
+            <div class="header-meta">
+                <span class="badge-pill badge-ver">v1.2.1</span>
+                <span class="badge-pill badge-ci">Stable</span>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div id="errorBanner"></div>
+
+        <div class="dashboard-grid">
+            <!-- Training Card -->
+            <div class="card">
+                <span class="eyebrow">Training</span>
+                <div class="card-title">Dataset Configuration</div>
+                <div class="card-subtitle">Upload CSV and define the target variable for parallel evaluation.</div>
+                
+                <form id="trainForm">
+                    <div class="upload-zone" id="dropZone">
+                        <p>Drop CSV or click to browse</p>
+                        <input type="file" id="datasetInput" accept=".csv" style="display: none;">
+                    </div>
+                    
+                    <div id="fileInfo" style="display:none; font-size:12px; color:var(--text-sec); margin-bottom:20px;">
+                        File: <span id="fileName" style="font-weight:600; color:var(--primary);"></span> 
+                        &nbsp;•&nbsp; 
+                        Rows: <span id="rowCount">0</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Target Variable</label>
+                        <input type="text" id="targetColumn" placeholder="e.g., target, survival" required>
+                    </div>
+
+                    <button type="submit" class="btn" id="trainBtn">▶ Run Pipeline</button>
+                </form>
+
+                <div class="progress-wrap" id="progressContainer">
+                    <div class="progress-info">
+                        <span id="currentStatus">Starting...</span>
+                        <span id="progressText">0%</span>
+                    </div>
+                    <div class="progress-track">
+                        <div class="progress-bar" id="progressBar"></div>
+                    </div>
+                    <div class="steps">
+                        <span class="step active">Load</span>
+                        <span class="step">Train</span>
+                        <span class="step">Test</span>
+                        <span class="step">Export</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Historical Result (Optional Add) -->
+            <div id="trainResult" class="card" style="display:none;">
+                <span class="eyebrow">Training Logs</span>
+                <div id="trainOutput" style="font-family:'JetBrains Mono'; font-size:12px; color:var(--text-sec);"></div>
+            </div>
+
+            <!-- Results Card -->
+            <div class="card" id="comparisonSection" style="display:none;">
+                <span class="eyebrow">Results</span>
+                <div class="card-title">Model Benchmarks</div>
+                <div class="card-subtitle">Comparison of multiple architectures on the hold-out set.</div>
+                
+                <div class="table-wrap">
+                    <table id="comparisonTable">
+                        <thead>
+                            <tr>
+                                <th>Architecture</th>
+                                <th id="metric1Header">Accuracy</th>
+                                <th id="metric2Header">F1 Score</th>
+                                <th>Outcome</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody"></tbody>
+                    </table>
+                </div>
+
+                <div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--border); font-size:14px; font-weight:600;">
+                    Selected: <span id="bestModelName" style="color:var(--accent)">-</span>
+                </div>
+            </div>
+
+            <!-- Inference Card -->
+            <div class="card">
+                <span class="eyebrow">Inference</span>
+                <div class="card-title">Real-time Prediction</div>
+                <div class="card-subtitle">Execute model inference on real vectors via JSON.</div>
+
+                <div id="feature-hint"></div>
+
+                <div class="form-group">
+                    <label>Feature Map (JSON)</label>
+                    <textarea id="featuresJson" rows="6" placeholder="{}"></textarea>
+                    <div id="jsonError" style="color:var(--error); font-size:12px; margin-top:8px; display:none;">Invalid JSON</div>
+                </div>
+
+                <button class="btn" id="predictBtn" style="width: 140px;">⚡ Predict</button>
+
+                <div class="result-box" id="predictResult">
+                    <div id="predictOutput"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            let currentSchema = null;
+
+            const el = id => document.getElementById(id);
+            const setText = (id, text) => { const node = el(id); if (node) node.textContent = text; };
+            const setHTML = (id, html) => { const node = el(id); if (node) node.innerHTML = html; };
+            const setStyle = (id, prop, val) => { const node = el(id); if (node) node.style[prop] = val; };
+
+            // Elements
+            const form = el('trainForm');
+            const fileInput = el('datasetInput');
+            const dropZone = el('dropZone');
+            const trainBtn = el('trainBtn');
+            const predictBtn = el('predictBtn');
+
+            // Init Schema
+            fetch('/schema').then(r => r.ok && r.json()).then(s => s && applySchema(s)).catch(() => {});
+
+            // File Handlers
+            if (dropZone) {
+                dropZone.onclick = () => fileInput && fileInput.click();
+                dropZone.ondragover = (e) => { e.preventDefault(); dropZone.style.borderColor = "#6366f1"; };
+                dropZone.ondragleave = () => dropZone.style.borderColor = "#d1d5db";
+                dropZone.ondrop = (e) => {
+                    e.preventDefault();
+                    dropZone.style.borderColor = "#d1d5db";
+                    if (e.dataTransfer.files.length) {
+                        if (fileInput) fileInput.files = e.dataTransfer.files;
+                        handleFile();
+                    }
+                };
+            }
+            if (fileInput) fileInput.onchange = handleFile;
+
+            function handleFile() {
+                const file = fileInput.files[0];
+                if (!file) return;
+                setText('fileName', file.name);
+                setStyle('fileInfo', 'display', 'block');
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const rows = e.target.result.split('\n').length - 1;
+                    setText('rowCount', rows.toLocaleString());
+                };
+                reader.readAsText(file);
+            }
+
+            // Training
+            if (form) form.onsubmit = async (e) => {
+                e.preventDefault();
+                setStyle('errorBanner', 'display', 'none');
+                if (trainBtn) trainBtn.disabled = true;
+
+                const file = fileInput.files[0];
+                const target = el('targetColumn').value;
+                if (!file) { showError("CSV required"); if (trainBtn) trainBtn.disabled = false; return; }
+
+                startProgress();
+                const fd = new FormData(); fd.append('file', file); fd.append('target_column', target);
+
+                try {
+                    const res = await fetch('/train', { method: 'POST', body: fd });
+                    const data = await res.json();
+                    if (!res.ok) throw new Error(data.detail || "Train failed");
+
+                    finishProgress();
+                    renderResults(data.results);
+                    if (data.results && Array.isArray(data.results.feature_names)) {
+                        applySchema({
+                            feature_names: data.results.feature_names,
+                            numerical_features: data.results.numerical_features,
+                            categorical_features: data.results.categorical_features,
+                            dropped_columns: data.results.dropped_columns,
+                            target_classes: data.results.target_classes,
+                            sample_input: data.results.sample_input
+                        });
+                    }
+                } catch (err) {
+                    showError(err.message);
+                    stopProgress();
+                } finally { if (trainBtn) trainBtn.disabled = false; }
+            };
+
+            function applySchema(s) {
+                if (!s || (s.feature_names || []).length === 0) return;
+                currentSchema = s;
+                const jsonBox = el('featuresJson');
+                if (jsonBox) jsonBox.value = JSON.stringify(s.sample_input || {}, null, 4);
+
+                const num = (s.numerical_features || []).length;
+                const cat = (s.categorical_features || []).length;
+                const hintHTML = `
+                    <strong>Features: ${num+cat}</strong><br>
+                    ${num ? 'Numerical: '+s.numerical_features.join(', ')+'<br>' : ''}
+                    ${cat ? 'Categorical: '+s.categorical_features.join(', ')+'<br>' : ''}
+                    ${(s.dropped_columns||[]).length ? '<span style="opacity:0.6">Dropped: '+s.dropped_columns.join(', ')+'</span>' : ''}
+                `;
+                setHTML('feature-hint', hintHTML);
+                setStyle('feature-hint', 'display', 'block');
+            }
+
+            function renderResults(res) {
+                setStyle('comparisonSection', 'display', 'block');
+                setText('bestModelName', res.model_name);
+                const table = el('tableBody');
+                if (!table) return;
+                table.innerHTML = '';
+
+                const isClf = res.task_type === 'classification';
+                setText('metric1Header', isClf ? 'Accuracy' : 'RMSE');
+                setText('metric2Header', isClf ? 'F1 Score' : 'R2 Score');
+
+                const models = res.all_results || {};
+                Object.entries(models).sort((a,b) => isClf ? b[1].accuracy - a[1].accuracy : a[1].rmse - b[1].rmse).forEach(([n, m], idx) => {
+                    const best = n === res.model_name;
+                    const r = document.createElement('tr');
+                    if (best) r.className = 'best-row';
+                    r.innerHTML = `
+                        <td style="font-weight:600">${n}</td>
+                        <td style="font-family:'JetBrains Mono'">${m[isClf?'accuracy':'rmse'].toFixed(3)}</td>
+                        <td style="font-family:'JetBrains Mono'">${m[isClf?'f1_score':'r2_score'].toFixed(3)}</td>
+                        <td style="color:${best?'#6366f1':'#6b7280'}; font-weight:600">${best?'SELECTED':'PASSED'}</td>
+                    `;
+                    table.appendChild(r);
+                });
+                const section = el('comparisonSection');
+                if (section) section.scrollIntoView({ behavior: 'smooth' });
+            }
+
+            // Inference
+            if (predictBtn) predictBtn.onclick = async () => {
+                const box = el('featuresJson');
+                const err = el('jsonError');
+                if (err) err.style.display = 'none';
+                try {
+                    const features = JSON.parse(box.value);
+                    const res = await fetch('/predict', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({features}) });
+                    const data = await res.json();
+                    if (!res.ok) throw new Error(data.detail || "Predict failed");
+
+                    setStyle('predictResult', 'display', 'block');
+                    const isClf = data.task_type === 'classification';
+                    const pred = String(data.prediction);
+                    const color = isClf ? (['1','true','yes','survived'].includes(pred.toLowerCase()) ? '#16a34a' : (['0','false','no'].includes(pred.toLowerCase()) ? '#dc2626' : '#0f0f0f')) : '#0f0f0f';
+                    
+                    const html = `
+                        <div style="font-size:11px; color:#6b7280; text-transform:uppercase; text-align:center;">Inference Result</div>
+                        <div class="res-val" style="color:${color}">${pred}</div>
+                        ${data.confidence ? `<div style="font-size:13px; color:#16a34a; font-weight:600; text-align:center;">Confidence: ${(data.confidence*100).toFixed(1)}%</div>` : ''}
+                        <div style="font-size:11px; color:#6b7280; text-align:center; margin-top:12px; font-family:'JetBrains Mono'">Model: ${data.model_used}</div>
+                        ${(data.auto_filled||[]).length ? `<div class="warning-pill">⚠ Filled: ${data.auto_filled.join(', ')}</div>` : ''}
+                    `;
+                    setHTML('predictOutput', html);
+                    const pr = el('predictResult');
+                    if (pr) pr.scrollIntoView({ behavior: 'smooth' });
+                } catch (e) {
+                    if (e instanceof SyntaxError) { if (err) err.style.display = 'block'; }
+                    else showError(e.message);
+                }
+            };
+
+            // Progress
+            let timer;
+            function startProgress() {
+                setStyle('progressContainer', 'display', 'block');
+                let w = 0; let s = 0;
+                timer = setInterval(() => {
+                    if (w >= 95) return; w += Math.random() * 2;
+                    const pb = el('progressBar'); if (pb) pb.style.width = w + '%';
+                    setText('progressText', Math.round(w) + '%');
+                    if (w > 30 && s === 0) { s = 1; updateStep(1, "Training..."); }
+                    else if (w > 70 && s === 1) { s = 2; updateStep(2, "Verifying..."); }
+                }, 300);
+            }
+            function updateStep(i, t) {
+                const steps = document.querySelectorAll('.step');
+                steps.forEach(l => l.classList.remove('active'));
+                if (steps[i]) steps[i].classList.add('active');
+                setText('currentStatus', t);
+            }
+            function finishProgress() { clearInterval(timer); const pb = el('progressBar'); if (pb) pb.style.width = '100%'; setText('progressText', '100%'); updateStep(3, "Ready"); }
+            function stopProgress() { clearInterval(timer); setStyle('progressContainer', 'display', 'none'); }
+
+            function showError(m) { setHTML('errorBanner', '<strong>Error:</strong> ' + m); setStyle('errorBanner', 'display', 'block'); window.scrollTo({top:0, behavior:'smooth'}); }
+        });
+    </script>
+</body>
+</html>
