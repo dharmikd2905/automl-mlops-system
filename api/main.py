@@ -8,7 +8,7 @@ from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
-from api.schemas import PredictionRequest, PredictionResponse
+from api.schemas import PredictionRequest
 from pipelines.train_pipeline import TrainingPipeline
 
 app = FastAPI(title="MLOps Platform API", version="1.0.0")
