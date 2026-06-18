@@ -51,7 +51,7 @@ def test_preprocessing_regression():
     df = pd.concat([X, y], axis=1)
     
     # Manually specify regression to avoid auto-detection issues
-    preprocessor = DataPreprocessor(task_type='regression')
+    preprocessor = DataPreprocessor()
     X_train, X_test, y_train, y_test = preprocessor.fit_transform(df, 'target')
     
     assert preprocessor.task_type == 'regression'
