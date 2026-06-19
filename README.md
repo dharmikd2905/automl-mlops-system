@@ -1,7 +1,7 @@
 # ⚡ AutoML MLOps Platform
 
 [![GitHub Repo](https://img.shields.io/badge/GitHub-Repo-181717?logo=github&logoColor=white)](https://github.com/dharmikdudhat/automl-mlops-system)
-[![CI/CD Pipeline](https://github.com/dharmikdudhat/automl-mlops-system/actions/workflows/ci.yml/badge.svg)](https://github.com/dharmikdudhat/automl-mlops-system/actions/workflows/ci.yml)
+
 [![Python](https://img.shields.io/badge/Python-3.10-3776AB?logo=python&logoColor=white)](https://www.python.org/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.104-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
 [![scikit--learn](https://img.shields.io/badge/scikit--learn-1.3-F7931E?logo=scikit-learn&logoColor=white)](https://scikit-learn.org/)
@@ -80,12 +80,7 @@ docker-compose up --build
 ## 👤 Author
 
 **Dharmik Dudhat**
-*B.Tech Information & Communication Technology*
-**Pandit Deendayal Energy University (PDEU), 2026**
-**CGPA: 8.8**
 
-- [GitHub](https://github.com/dharmikdudhat)
-- [LinkedIn](https://linkedin.com/in/dharmikdudhat)
 
 ---
 
