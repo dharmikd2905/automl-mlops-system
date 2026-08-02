@@ -286,7 +286,7 @@ Open http://localhost:5000 to browse experiments, parameters, metrics, and regis
 
 > Dashboard screenshot
 <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/6dc7358c-9e63-4bb9-bc2d-681b36ff39a2" />
-
+---
 > Training results screenshot
 <img width="1894" height="824" alt="image" src="https://github.com/user-attachments/assets/a9bb8eab-2bc8-40b7-bf00-4fec539a914c" />
 
