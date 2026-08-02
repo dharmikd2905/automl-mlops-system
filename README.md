@@ -287,12 +287,15 @@ Open http://localhost:5000 to browse experiments, parameters, metrics, and regis
 > Dashboard screenshot
 <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/6dc7358c-9e63-4bb9-bc2d-681b36ff39a2" />
 
+> Training results screenshot
+<img width="1894" height="824" alt="image" src="https://github.com/user-attachments/assets/a9bb8eab-2bc8-40b7-bf00-4fec539a914c" />
 
-> Swagger UI screenshot — coming soon
+> MLflow dashboard screenshot
+<img width="1455" height="560" alt="image" src="https://github.com/user-attachments/assets/66feb534-8b67-41bd-99f7-0799cf5bbf12" />
 
-> MLflow dashboard screenshot — coming soon
+> Prediction results screenshot
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/b0934f9d-11c0-455f-bca0-b92c24b87841" />
 
-> Training results screenshot — coming soon
 
 ---
 
