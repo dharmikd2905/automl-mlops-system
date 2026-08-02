@@ -1,7 +1,7 @@
 # 🚀 AutoML MLOps System
 
 <p align="center">
-  <h1 align="center">⚡ AutoML & MLOps Platform</h1>
+ 
   <p align="center">
     Train, evaluate, track and serve ML models automatically using FastAPI, MLflow, Docker and GitHub Actions.
   </p>
