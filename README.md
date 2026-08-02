@@ -342,4 +342,4 @@ Open http://localhost:5000 to browse experiments, parameters, metrics, and regis
 **Dharmik Dudhat**
 B.Tech, Information & Communication Technology — Pandit Deendayal Energy University (PDEU)
 
-[GitHub](https://github.com/dharmikd2905) · [LinkedIn](https://linkedin.com/in/dharmik-dudhat-66203b289) · dharmikdudhat37@gmail.com
+[GitHub](https://github.com/dharmikd2905) · [LinkedIn](https://linkedin.com/in/dharmik-dudhat-66203b289)
