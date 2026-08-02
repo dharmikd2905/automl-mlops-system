@@ -333,17 +333,13 @@ Open http://localhost:5000 to browse experiments, parameters, metrics, and regis
 4. Push: `git push origin feature/new-feature`
 5. Open a Pull Request
 
----
 
-## 📄 License
-
-MIT License — see the `LICENSE` file for details.
 
 ---
 
 ## 👨‍💻 Author
 
 **Dharmik Dudhat**
-Computer Engineering Undergraduate · Full Stack & MLOps
+B.Tech, Information & Communication Technology — Pandit Deendayal Energy University (PDEU)
 
-GitHub: [github.com/dharmikd2905](https://github.com/dharmikd2905)
+[GitHub](https://github.com/dharmikd2905) · [LinkedIn](https://linkedin.com/in/dharmik-dudhat-66203b289) · dharmikdudhat37@gmail.com
