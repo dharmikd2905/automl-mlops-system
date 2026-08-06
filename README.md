@@ -1,11 +1,6 @@
-# 🚀 AutoML MLOps System
+# AutoML MLOps System
 
-<p align="center">
- 
-  <p align="center">
-    Train, evaluate, track and serve ML models automatically using FastAPI, MLflow, Docker and GitHub Actions.
-  </p>
-</p>
+Train, evaluate, track, and serve ML models automatically using FastAPI, MLflow, Docker, and GitHub Actions.
 
 <p align="center">
 
@@ -20,74 +15,43 @@
 
 </p>
 
----
+## Overview
 
-## 📖 Overview
+AutoML MLOps System automates the core ML lifecycle end to end — from raw CSV ingestion to a deployable model behind a REST API.
 
-AutoML MLOps System is an end-to-end machine learning platform that automates the core ML lifecycle — from raw CSV ingestion to model deployment.
+Instead of manually preprocessing data, picking an algorithm, evaluating it, and wiring up deployment by hand, the pipeline handles all of that: it detects whether the target column is a classification or regression problem, applies preprocessing (missing-value imputation, encoding, scaling), trains several candidate models in parallel, and serves whichever one performs best.
 
-Instead of manually preprocessing data, selecting algorithms, evaluating performance, and deploying models, this application runs those steps through a single pipeline: it detects whether the target column is a classification or regression problem, applies preprocessing rules (missing-value imputation, encoding, scaling), trains several candidate models in parallel, and serves the best one behind a REST API.
+Supports both classification and regression tasks.
 
-Supports both **Classification** and **Regression** tasks.
+## Key Features
 
----
+**Automated pipeline** — CSV upload, target column selection, automatic task-type detection (classification vs. regression), rule-based preprocessing and encoding, multi-model training with automatic best-model selection.
 
-## ✨ Key Features
+**Data preprocessing** — median imputation for numerical columns and mode for categorical, auto-dropping of high-cardinality/ID-like columns, one-hot encoding for low-cardinality categorical features (label encoding otherwise), StandardScaler for feature scaling, and schema/sample-input generation for inference.
 
-### 🤖 Automated Pipeline
-- CSV ingestion via upload
-- Target column selection
-- Automatic task type detection (classification vs. regression)
-- Rule-based preprocessing and feature encoding
-- Multi-model training and automatic best-model selection
+> Worth noting: the preprocessing is rule-based — heuristics around column type, cardinality, and a couple of hardcoded domain-specific encodings — not a fully generalized AutoML feature-engineering engine. It works well on structured tabular datasets but isn't a drop-in solution for every schema.
 
-### 🧹 Data Preprocessing
-- Missing value imputation (median for numerical, mode for categorical)
-- High-cardinality / ID-like column auto-dropping
-- One-Hot Encoding for low-cardinality categorical columns, label encoding otherwise
-- Feature scaling (StandardScaler)
-- Sample input + schema generation for inference
+**Multi-model benchmarking**
 
-> Note: preprocessing is rule-based (heuristics for column type, cardinality, and a couple of hardcoded domain-specific encodings), not a fully generalized AutoML feature-engineering engine — good for structured tabular datasets, not a drop-in solution for every schema.
+Classification: Logistic Regression, Random Forest Classifier, Gradient Boosting Classifier
 
-### 🧠 Multi-Model Benchmarking
+Regression: Linear Regression, Ridge, Lasso, Random Forest Regressor, Gradient Boosting Regressor
 
-**Classification**
-- Logistic Regression
-- Random Forest Classifier
-- Gradient Boosting Classifier
+**Evaluation** — Accuracy and weighted F1 for classification; RMSE and R² for regression.
 
-**Regression**
-- Linear Regression
-- Ridge Regression
-- Lasso Regression
-- Random Forest Regressor
-- Gradient Boosting Regressor
+**Model management** — Joblib serialization of the model and preprocessor, local training history (`models_store/history.json`), and MLflow experiment tracking for params, metrics, and artifacts.
 
-### 📊 Evaluation
-- Classification: Accuracy, Weighted F1
-- Regression: RMSE, R²
-
-### 📦 Model Management
-- Joblib serialization of model + preprocessor
-- Local training history (`models_store/history.json`)
-- MLflow experiment tracking (params, metrics, artifacts)
-
-### 🌐 REST API (FastAPI)
-- `/train` — upload CSV + target column, runs the full pipeline
-- `/predict` — run inference on a JSON feature vector
-- `/schema` — returns expected feature names + sample input for the trained model
+**REST API (FastAPI)**
+- `/train` — upload a CSV and target column, runs the full pipeline
+- `/predict` — inference on a JSON feature vector
+- `/schema` — expected feature names and sample input for the trained model
 - `/history` — last 10 training runs
 
-### 🐳 Docker Support
-- Dockerfile + docker-compose (API + MLflow server)
+**Docker support** — Dockerfile plus docker-compose for the API and an MLflow server.
 
-### ✅ CI/CD
-GitHub Actions pipeline: lint (ruff) → test (pytest) → docker build
+**CI/CD** — GitHub Actions pipeline: lint (ruff) → test (pytest) → docker build.
 
----
-
-## 📈 Verified Results
+## Verified Results
 
 Benchmarked on the [California Housing dataset](https://scikit-learn.org/stable/datasets/real_world.html#california-housing-dataset) (20,640 rows, regression):
 
@@ -96,97 +60,52 @@ Benchmarked on the [California Housing dataset](https://scikit-learn.org/stable/
 | Linear Regression | 0.746 | 0.576 |
 | Ridge | 0.746 | 0.576 |
 | Lasso | 1.145 | -0.0002 |
-| **Random Forest Regressor** ⭐ | **0.505** | **0.805** |
+| **Random Forest Regressor** | **0.505** | **0.805** |
 | Gradient Boosting Regressor | 0.542 | 0.776 |
 
-Best model auto-selected: **RandomForestRegressor (R² = 0.805)**
+Best model auto-selected: RandomForestRegressor (R² = 0.805).
 
----
+## System Architecture
 
-## 🏗 System Architecture
+A CSV is uploaded and validated, then passed through preprocessing (imputation, encoding, scaling). Several candidate models — linear/logistic, random forest, and gradient boosting variants — are trained in parallel on the processed data and compared on RMSE/R² (regression) or accuracy/F1 (classification). The best-performing model is selected, logged to MLflow, and saved to disk with its preprocessor via joblib. From there it's served through the FastAPI inference endpoints.
 
-```text
-                   CSV Dataset
-                        │
-                        ▼
-              CSV / column validation
-                        │
-                        ▼
-             Preprocessing (impute,
-             encode, scale)
-                        │
-                        ▼
-           Train candidate models
-                        │
-        ┌───────────────┼────────────────┐
-        │               │                │
-        ▼               ▼                ▼
-   Linear/Logistic  Random Forest   Gradient Boosting
-        │
-        ▼
- Compare on RMSE/R² or Accuracy/F1
-        │
-        ▼
-    Select best model
-        │
-        ▼
-     MLflow logging
-        │
-        ▼
- Save model + preprocessor (joblib)
-        │
-        ▼
-    FastAPI inference endpoints
-```
-
----
-
-## 🛠 Technology Stack
+## Technology Stack
 
 | Layer | Technologies |
 |---|---|
 | Language | Python 3.10 |
 | API | FastAPI |
 | ML | scikit-learn |
-| Experiment Tracking | MLflow |
+| Experiment tracking | MLflow |
 | Serialization | Joblib |
-| Data Processing | Pandas, NumPy |
+| Data processing | Pandas, NumPy |
 | Testing | Pytest |
 | Linting | Ruff |
 | Deployment | Docker |
 | CI/CD | GitHub Actions |
 
----
+## Project Structure
 
-## 📂 Project Structure
-
-```text
+```
 automl-mlops-system/
-│
 ├── api/
 │   ├── main.py
 │   ├── schemas.py
 │   └── templates/
-│
 ├── data/
 │   ├── sample_classification.csv
 │   └── sample_regression.csv
-│
 ├── models/
 │   └── trainer.py
-│
 ├── pipelines/
 │   └── train_pipeline.py
-│
 ├── tests/
 │   ├── conftest.py
 │   ├── test_api.py
 │   └── test_pipeline.py
-│
 ├── utils/
 │   ├── preprocessing.py
 │   └── logger.py
-│
 ├── Dockerfile
 ├── docker-compose.yml
 ├── requirements.txt
@@ -195,18 +114,16 @@ automl-mlops-system/
 └── README.md
 ```
 
----
+## Getting Started
 
-## 🚀 Getting Started
-
-### Clone
+Clone the repo:
 
 ```bash
 git clone https://github.com/dharmikd2905/automl-mlops-system.git
 cd automl-mlops-system
 ```
 
-### Virtual Environment
+Create a virtual environment:
 
 ```bash
 python -m venv venv
@@ -222,15 +139,13 @@ Linux / macOS:
 source venv/bin/activate
 ```
 
-### Install Dependencies
+Install dependencies:
 
 ```bash
 pip install -r requirements.txt
 ```
 
----
-
-## ▶ Running the Application
+## Running the Application
 
 **Locally (API only, no MLflow tracking):**
 ```bash
@@ -248,9 +163,7 @@ docker compose up --build
 
 > If you run the API standalone without an MLflow server reachable at `MLFLOW_TRACKING_URI`, training still works — it falls back to local-only logging after the connection attempt times out.
 
----
-
-## 📡 API Endpoints
+## API Endpoints
 
 | Method | Endpoint | Description |
 |---|---|---|
@@ -260,9 +173,7 @@ docker compose up --build
 | GET | `/schema` | Feature names + sample input for the current model |
 | GET | `/history` | Last 10 training runs |
 
----
-
-## 🧪 Testing
+## Testing
 
 ```bash
 pytest -m "not slow"        # fast tests only
@@ -271,36 +182,32 @@ pytest                       # full suite, including real training runs
 
 CI runs `pytest tests/ -v -m "not slow"` after lint, before the Docker build.
 
----
-
-## 📊 MLflow
+## MLflow
 
 ```bash
 mlflow ui
 ```
 Open http://localhost:5000 to browse experiments, parameters, metrics, and registered runs.
 
----
+## Screenshots
 
-## 📸 Screenshots
+**Dashboard**
 
-### Dashboard screenshot
 <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/6dc7358c-9e63-4bb9-bc2d-681b36ff39a2" />
 
+**Training results**
 
-### Training results screenshot
 <img width="1894" height="824" alt="image" src="https://github.com/user-attachments/assets/a9bb8eab-2bc8-40b7-bf00-4fec539a914c" />
 
-### MLflow dashboard screenshot
+**MLflow dashboard**
+
 <img width="1455" height="560" alt="image" src="https://github.com/user-attachments/assets/66feb534-8b67-41bd-99f7-0799cf5bbf12" />
 
-### Prediction results screenshot
+**Prediction results**
+
 <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/b0934f9d-11c0-455f-bca0-b92c24b87841" />
 
-
----
-
-## 🔒 Highlights
+## Highlights
 
 - Modular codebase (api / pipelines / models / utils separated)
 - Rule-based automatic preprocessing
@@ -308,11 +215,9 @@ Open http://localhost:5000 to browse experiments, parameters, metrics, and regis
 - MLflow experiment tracking
 - Dockerized deployment
 - CI/CD pipeline (lint → test → build)
-- Unit + integration test suite
+- Unit and integration test suite
 
----
-
-## 🗺 Roadmap
+## Roadmap
 
 - Hyperparameter optimization
 - XGBoost / LightGBM support
@@ -323,23 +228,17 @@ Open http://localhost:5000 to browse experiments, parameters, metrics, and regis
 - Drift detection
 - Monitoring dashboard
 
----
-
-## 🤝 Contributing
+## Contributing
 
 1. Fork the repository
 2. Create a branch: `git checkout -b feature/new-feature`
 3. Commit: `git commit -m "Add new feature"`
 4. Push: `git push origin feature/new-feature`
-5. Open a Pull Request
+5. Open a pull request
 
+## Author
 
-
----
-
-## 👨‍💻 Author
-
-**Dharmik Dudhat**   <br>
+**Dharmik Dudhat**
 
 B.Tech, Information & Communication Technology — Pandit Deendayal Energy University (PDEU)
 
